@@ -1,0 +1,51 @@
+
+class A{}
+class B extends A{}
+class C extends B{
+	public int x, y;
+	public void Foo() {}
+}
+
+public class App {
+
+	public static void main(String[] args) {
+		PrintBaseTypes("Ola");
+		PrintBaseTypes(19);
+		PrintBaseTypes(new C());
+		PrintMembers(new C());
+		PrintMethods(new C());
+		PrintFields(new C());
+	}
+	
+	public static void PrintMembers(Object obj) {
+		System.out.print("Members: ");
+		
+		System.out.println();
+	}
+	
+	public static void PrintMethods(Object obj) {
+		System.out.print("Methods: ");
+		
+		System.out.println();
+	}
+	
+	public static void PrintFields(Object obj) {
+		System.out.print("Fields: ");
+		
+		System.out.println();
+	}
+	
+	public static void PrintBaseTypes(Object obj) {
+		for (Class t : obj.getClass().getClasses()) {
+			
+		}
+		Class t=obj.getClass();
+		do {
+			System.out.print(t.getSimpleName()+" ");
+			t=t.getClasses()
+		}while(t!=null);
+		
+		System.out.println();
+	}
+
+}

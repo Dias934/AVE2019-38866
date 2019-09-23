@@ -1,0 +1,36 @@
+
+class A{}
+class B extends A{}
+
+public class App {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	public static void PrintMembers(Object obj) {
+		System.out.print("Members: ");
+		
+		System.out.println();
+	}
+	
+	public static void PrintMethods(Object obj) {
+		System.out.print("Methods: ");
+		
+		System.out.println();
+	}
+	
+	public static void PrintFields(Object obj) {
+		System.out.print("Fields: ");
+		
+		System.out.println();
+	}
+	
+	public static void PrintBaseTypes(Object obj) {
+		System.out.print("Members: ");
+		
+		System.out.println();
+	}
+
+}

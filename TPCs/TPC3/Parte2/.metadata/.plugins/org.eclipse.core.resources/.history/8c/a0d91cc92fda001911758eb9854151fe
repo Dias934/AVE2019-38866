@@ -1,0 +1,21 @@
+
+public class App {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	public static void PrintMembers(Object obj) {
+		
+	}
+	
+	public static void PrintMethods(Object obj) {
+		
+	}
+	
+	public static void PrintFields(Object obj) {
+		
+	}
+
+}
