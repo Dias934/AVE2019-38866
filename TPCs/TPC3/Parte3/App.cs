@@ -52,6 +52,9 @@ class App {
         Console.WriteLine();
     }
     public static void PrintInterfaces(Type t) {
+		Console.Write("(");
+		foreach(var i in t.GetInterfaces()) Console.Write(i.Name+" ");
+		Console.Write(")");
         
     }
 }
