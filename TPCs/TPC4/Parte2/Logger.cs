@@ -4,56 +4,49 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Logger {
-
-    public static void Log(object o) {
-        Type t = o.GetType();
-        if(t.IsArray) LogArray((IEnumerable) o);
-        else {
-            var fs = InitFields(t ); // 1x
-            var getters = InitMethods(t ); // 1x
-            getters.AddRange(fs);
-			getters.AddRange(InitProperties(t));
-            LogObject(o, getters);
-        }
-    }
-    
-    public static  IEnumerable<IGetter> InitFields(Type t) {
-        List<IGetter> l = new List<IGetter>();
-        foreach(FieldInfo m in t.GetFields()) {
-            l.Add(new GetterField(m));
-        }
-        return l;
-    }
 	
-    public static List<IGetter> InitMethods(Type t) {
-        List<IGetter> l = new List<IGetter>();
-        foreach(MethodInfo m in t.GetMethods()) {
-            if(m.ReturnType != typeof(void) && m.GetParameters().Length == 0) {
-                l.Add(new GetterMethod(m));
-            }
-        }
-        return l;
-    }
+	private List<Readers> lr; //list of readers
+	public Logger(){lr=new List<Readers>();}
 	
-	public static IEnumerable<IGetter> InitProperties(Type t){
-		List<IGetter> l = new List<IGetter>();
-		foreach(PropertyInfo p in t.GetProperties())
-			l.Add(new GetterProperty(p));
-		return l;
+	public void ReadFields(){
+		if(!lr.Exists(x => x.GetType()==typeof(ReaderFields)))
+			lr.Add(new ReaderFields());
+	}
+	
+	public void ReadMethods(){
+		if(!lr.Exists(x => x.GetType()==typeof(ReaderMethods)))
+			lr.Add(new ReaderMethods());
+	}
+	
+	public void ReadProperties(){
+		if(!lr.Exists(x => x.GetType()==typeof(ReaderProperties)))
+			lr.Add(new ReaderProperties());
+	}
+	
+	public void Log(object o){
+		Type t = o.GetType();
+       if(t.IsArray) LogArray((IEnumerable) o);
+       else {
+			List <IGetter> lig=new List<IGetter>();
+			foreach(Readers r in lr){
+				lig.AddRange(r.Read(t));
+			}
+            LogObject(o, lig);
+        }
 	}
     
-    public static void LogArray(IEnumerable o) {
+    public void LogArray(IEnumerable o) {
         Type elemType = o.GetType().GetElementType(); // Tipo dos elementos do Array
-        var fs = InitFields(elemType ); // 1x
-        var getters = InitMethods(elemType ); // 1x
-        getters.AddRange(fs);
-		getters.AddRange(InitProperties(elemType));
+        List <IGetter> lig=new List<IGetter>();
+		foreach(Readers r in lr){
+			lig.AddRange(r.Read(elemType));
+		}
         Console.WriteLine("Array of " + elemType.Name + "[");
-        foreach(object item in o) LogObject(item, getters); // * 
+        foreach(object item in o) LogObject(item, lig); // * 
         Console.WriteLine("]");
     }
     
-    public static void LogObject(object o, IEnumerable<IGetter> gs) {
+    public void LogObject(object o, IEnumerable<IGetter> gs) {
         Type t = o.GetType();
         Console.Write(t.Name + "{");
         foreach(IGetter g in gs) {
@@ -62,6 +55,41 @@ public class Logger {
         }
         Console.WriteLine("}");
     }
+}
+
+public interface Readers{
+	IEnumerable<IGetter> Read(Type t);
+}
+
+public class ReaderFields:Readers{
+	public IEnumerable<IGetter> Read(Type t){
+		List<IGetter> l = new List<IGetter>();
+        foreach(FieldInfo m in t.GetFields()) {
+            l.Add(new GetterField(m));
+        }
+        return l;
+	}
+}
+
+public class ReaderMethods:Readers{
+	public IEnumerable<IGetter> Read(Type t){
+		List<IGetter> l = new List<IGetter>();
+        foreach(MethodInfo m in t.GetMethods()) {
+            if(m.ReturnType != typeof(void) && m.GetParameters().Length == 0) {
+                l.Add(new GetterMethod(m));
+            }
+        }
+        return l;
+	}
+}
+
+public class ReaderProperties:Readers{
+	public IEnumerable<IGetter> Read(Type t){
+		List<IGetter> l = new List<IGetter>();
+		foreach(PropertyInfo p in t.GetProperties())
+			l.Add(new GetterProperty(p));
+		return l;
+	}
 }
 
 public interface IGetter {

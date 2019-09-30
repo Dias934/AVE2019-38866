@@ -43,7 +43,7 @@ class Account {
 
 public class App {
     public static void Main(){
-		//Logger log=new Logger();
+		
         Point p = new Point(7, 9);
         Student s = new Student(154134, "Ze Manel", 5243, "ze");
         
@@ -57,10 +57,35 @@ public class App {
         Console.WriteLine(p);
         Console.WriteLine(s);
         Console.WriteLine(a);
-        
-        Logger.Log(p);
-        Logger.Log(s);
-        Logger.Log(a);
-        Logger.Log(classroom);
+		Logger l=new Logger();
+        l.Log(p);
+        l.Log(s);
+        l.Log(a);
+		
+		Logger l1=new Logger();
+		l1.ReadFields();
+        l1.Log(p);
+        l1.Log(s);
+        l1.Log(a);
+		
+		Logger l2=new Logger();
+		l2.ReadMethods();
+        l2.Log(p);
+        l2.Log(s);
+        l2.Log(a);
+		
+		Logger l3=new Logger();
+		l3.ReadProperties();
+        l3.Log(p);
+        l3.Log(s);
+        l3.Log(a);
+		
+		Logger l4=new Logger();
+		l4.ReadMethods();
+		l4.ReadFields();
+		l4.ReadProperties();
+        l4.Log(p);
+        l4.Log(s);
+        l4.Log(classroom);
     }
 }
