@@ -91,5 +91,28 @@ namespace Jsonzai.Test
 			Assert.AreEqual(25, ac.Transactions[0].Value);
 			Assert.AreEqual(30, ac.Transactions[1].Value);
 		}
+
+		[TestMethod]
+		public void TestParsingJsonPropertyAtt()
+		{
+			string src = "{Name: \"Livro para tótós\", publish_date:{Year: 2015, Month: 2, Day: 23}, author: {"+
+				"Name: \"Ze Manel\", Birth: {Year: 1999, Month: 12, Day: 31}}, edition: 4}";
+			Book book = (Book)JsonParser.Parse(src, typeof(Book));
+			Assert.AreEqual("Livro para tótós", book.Name);
+			Assert.AreEqual(4, book.Edition);
+			Assert.AreEqual(23, book.PublishDate.Day);
+			Assert.AreEqual("Ze Manel", book.Author.Name);
+		}
+
+		[TestMethod]
+		public void TestParsingJsonConvertAtt()
+		{
+			string src = "{DueDate: \"18/10/2019 17:26\"}";
+			Clock c = (Clock)JsonParser.Parse(src, typeof(Clock));
+			Assert.AreEqual(17, c.DueDate.Hour);
+			Assert.AreEqual(26, c.DueDate.Minute);
+			Assert.AreEqual(18, c.DueDate.Day);
+			Assert.AreEqual(10, c.DueDate.Month);
+		}
 	}
 }

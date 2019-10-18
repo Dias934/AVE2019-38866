@@ -13,15 +13,19 @@ namespace Jsonzai
 		IDictionary<string, FieldInfo> fields = new Dictionary<string, FieldInfo>();
 
 		public PropertyFieldStorage() { }
-		public PropertyFieldStorage(PropertyInfo[] props, FieldInfo[] fields) { 
-			foreach(PropertyInfo p in props)
-			{
-				this.props.Add(p.Name, p);
-			}
+		public PropertyFieldStorage(PropertyInfo[] props, FieldInfo[] fields) {
+			foreach (PropertyInfo p in props)
+				this.props.Add(CheckAttributeName(p,p.Name), p);
 			foreach (FieldInfo f in fields)
-			{
-				this.fields.Add(f.Name, f);
-			}
+				this.fields.Add(CheckAttributeName(f,f.Name), f);
+			
+		}
+
+		private string CheckAttributeName(MemberInfo m,string name)
+		{
+			if (m.GetCustomAttribute(typeof(JsonPropertyAttribute)) != null)
+				return m.GetCustomAttribute<JsonPropertyAttribute>().Name;
+			return name;
 		}
 
 		public bool ContainsMember(string s){
@@ -31,10 +35,17 @@ namespace Jsonzai
 		internal void SetValue(object target, string aux, object val)
 		{
 			if (props.ContainsKey(aux))
-				props[aux].SetValue(target, val);
+				props[aux].SetValue(target, CheckAttributeName(props[aux],val));
 			else
-				fields[aux].SetValue(target, val);
+				fields[aux].SetValue(target, CheckAttributeName(fields[aux], val));
 		}
+		private object CheckAttributeName(MemberInfo m, object val)
+		{
+			if (m.GetCustomAttribute(typeof(JsonConvertAttribute)) != null)
+				return m.GetCustomAttribute<JsonConvertAttribute>().Convert(val.ToString());
+			return val;
+		}
+
 
 		internal Type GetTypeOfMember(string aux){
 			Type t;

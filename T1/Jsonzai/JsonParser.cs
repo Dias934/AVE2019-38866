@@ -73,7 +73,6 @@ namespace Jsonzai
             while (tokens.Current != JsonTokens.OBJECT_END)
             {
 				name = tokens.PopWordFinishedWith(':');
-				if (name.Length>0 && name[0] > 'a' && name[0] < 'z') name=name.ToUpper().Substring(0,1)+name.Substring(1,name.Length);
 				if (_cache[t].ContainsMember(name))
 					_cache[t].SetValue(target,name,JsonParser.Parse(tokens, _cache[t].GetTypeOfMember(name)));
 				else throw new ArgumentException("Wrong Field/Property passed on argument");
