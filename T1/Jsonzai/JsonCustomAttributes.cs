@@ -19,16 +19,15 @@ namespace Jsonzai
 
 	public class JsonConvertAttribute:Attribute
 	{
-		public Type Type { get; }
+		private IJsonConvert jsonConvert;
 
 		public JsonConvertAttribute(Type Type)
 		{
-			this.Type = Type;
+			jsonConvert = (IJsonConvert)Activator.CreateInstance(Type, null);
 		}
 
-		public object Convert(string s)
-		{
-			return ((IJsonConvert)Activator.CreateInstance(Type, new object[] { s })).Convert();
+		public object Convert(string s){
+			return jsonConvert.Convert(s);
 		}
 	}
 }

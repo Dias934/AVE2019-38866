@@ -35,11 +35,11 @@ namespace Jsonzai
 		internal void SetValue(object target, string aux, object val)
 		{
 			if (props.ContainsKey(aux))
-				props[aux].SetValue(target, CheckAttributeName(props[aux],val));
+				props[aux].SetValue(target, CheckAttributeObject(props[aux],val));
 			else
-				fields[aux].SetValue(target, CheckAttributeName(fields[aux], val));
+				fields[aux].SetValue(target, CheckAttributeObject(fields[aux], val));
 		}
-		private object CheckAttributeName(MemberInfo m, object val)
+		private object CheckAttributeObject(MemberInfo m, object val)
 		{
 			if (m.GetCustomAttribute(typeof(JsonConvertAttribute)) != null)
 				return m.GetCustomAttribute<JsonConvertAttribute>().Convert(val.ToString());

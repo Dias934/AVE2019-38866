@@ -9,20 +9,15 @@ namespace Jsonzai
 
 	interface IJsonConvert
 	{
-		object Convert();
+		object Convert(string s);
 	}
 	public class JsonToDateTime:IJsonConvert
 	{
+		
+		public JsonToDateTime(){}
 
-		private string _DateTime;
-
-		public JsonToDateTime(String s)
-		{
-			_DateTime = s;
-		}
-
-		public object Convert(){
-			return DateTime.Parse(_DateTime);
+		public object Convert(string s){
+			return DateTime.Parse(s);
 		}
 	}
 }
