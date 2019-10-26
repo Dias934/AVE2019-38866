@@ -11,7 +11,8 @@ namespace Jsonzai
 	public class JsonParser
 	{
 		static readonly Type[] PARSE_ARGUMENTS_TYPES = { typeof(string) };
-		static IDictionary<Type, PropertyFieldStorage> _cache=new Dictionary<Type, PropertyFieldStorage>(); //cache
+		
+		static readonly ReflectionCache _cache = new ReflectionCache();
 
         public static object Parse(String source, Type klass)
         {
@@ -45,22 +46,21 @@ namespace Jsonzai
                     return null;
                 else
                     throw new InvalidOperationException("Looking for a primitive but requires instance of " + klass);
-			if(klass.Equals(typeof(decimal))) return Convert.ToDecimal(word);
-			if (klass.Equals(typeof(float))) return Convert.ToSingle(word);
-			if (klass.Equals(typeof(double))) return Convert.ToDouble(word);
-			if (klass.Equals(typeof(short))) return Convert.ToInt16(word);
-			if (klass.Equals(typeof(int))) return Convert.ToInt32(word);
-			if (klass.Equals(typeof(long))) return Convert.ToInt64(word);
-			if (klass.Equals(typeof(ushort))) return Convert.ToUInt16(word);
-			if (klass.Equals(typeof(uint))) return Convert.ToUInt32(word);
-			if (klass.Equals(typeof(ulong))) return Convert.ToUInt64(word);
-			throw new NotImplementedException();
+			_cache.CheckAndAddType(klass, klass.GetMethod("Parse",new Type[] {typeof(string) })); //mete em cache o método Parse do tipo primitivo do argumento klass
+			return _cache.GetValueFromMethod(klass, "Parse", word); //pede para receber um valor do método Parse 
 		}
 
         private static object ParseObject(JsonTokens tokens, Type klass)
         {
-			if (!_cache.ContainsKey(klass))
-				_cache.Add(klass, new PropertyFieldStorage(klass.GetProperties(), klass.GetFields()));
+			if (!_cache.ContainsType(klass))
+			{
+				PropertyInfo [] p = klass.GetProperties();
+				FieldInfo[] f = klass.GetFields();
+				MemberInfo[] m = new MemberInfo[p.Length+f.Length];
+				Array.Copy(p, m, p.Length);
+				Array.Copy(f, 0, m, p.Length, f.Length);
+				_cache.CheckAndAddType(klass, m);
+			}
 			tokens.Pop(JsonTokens.OBJECT_OPEN); // Discard bracket { OBJECT_OPEN
             object target = Activator.CreateInstance(klass);
             return FillObject(tokens, target);
@@ -73,8 +73,8 @@ namespace Jsonzai
             while (tokens.Current != JsonTokens.OBJECT_END)
             {
 				name = tokens.PopWordFinishedWith(':');
-				if (_cache[t].ContainsMember(name))
-					_cache[t].SetValue(target,name,JsonParser.Parse(tokens, _cache[t].GetTypeOfMember(name)));
+				if (_cache.TypeHasThisMember(t,name))
+					_cache.SetValueInThisType(t,target,name,Parse(tokens, _cache.GetTypeOfMember(t,name)));
 				else throw new ArgumentException("Wrong Field/Property passed on argument");
 				if (tokens.Current == JsonTokens.COMMA) tokens.MoveNext();
 				if (tokens.Current == JsonTokens.ARRAY_END) throw new InvalidOperationException("Wrong Array End character detected");
@@ -90,7 +90,7 @@ namespace Jsonzai
             tokens.Pop(JsonTokens.ARRAY_OPEN); // Discard square brackets [ ARRAY_OPEN
             while (tokens.Current != JsonTokens.ARRAY_END)
             {
-				if (tokens.Current == JsonTokens.OBJECT_OPEN) list.Add(JsonParser.Parse(tokens, klass));
+				if (tokens.Current == JsonTokens.OBJECT_OPEN) list.Add(Parse(tokens, klass));
 				if (tokens.Current == JsonTokens.COMMA) tokens.MoveNext();
 				if (tokens.Current == ' ') tokens.Trim();
 			}

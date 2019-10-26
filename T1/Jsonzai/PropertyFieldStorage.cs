@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Jsonzai
 {
@@ -15,17 +12,17 @@ namespace Jsonzai
 		public PropertyFieldStorage() { }
 		public PropertyFieldStorage(PropertyInfo[] props, FieldInfo[] fields) {
 			foreach (PropertyInfo p in props)
-				this.props.Add(CheckAttributeName(p,p.Name), p);
+				this.props.Add(CheckAttributeName(p), p);
 			foreach (FieldInfo f in fields)
-				this.fields.Add(CheckAttributeName(f,f.Name), f);
+				this.fields.Add(CheckAttributeName(f), f);
 			
 		}
 
-		private string CheckAttributeName(MemberInfo m,string name)
+		private string CheckAttributeName(MemberInfo m)
 		{
 			if (m.GetCustomAttribute(typeof(JsonPropertyAttribute)) != null)
 				return m.GetCustomAttribute<JsonPropertyAttribute>().Name;
-			return name;
+			return m.Name;
 		}
 
 		public bool ContainsMember(string s){
