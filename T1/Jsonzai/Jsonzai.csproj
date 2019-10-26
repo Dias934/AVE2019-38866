@@ -42,12 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="JsonConvertAttribute.cs" />
     <Compile Include="JsonParser.cs" />
-    <Compile Include="JsonCustomAttributes.cs" />
     <Compile Include="IJsonConvert.cs" />
+    <Compile Include="JsonPropertyAttribute.cs" />
     <Compile Include="JsonTokens.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyFieldStorage.cs" />
     <Compile Include="ReflectionCache.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

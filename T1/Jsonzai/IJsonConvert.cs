@@ -7,17 +7,9 @@ using System.Threading.Tasks;
 namespace Jsonzai
 {
 
-	interface IJsonConvert
+	public interface IJsonConvert
 	{
 		object Convert(string s);
 	}
-	public class JsonToDateTime:IJsonConvert
-	{
-		
-		public JsonToDateTime(){}
-
-		public object Convert(string s){
-			return DateTime.Parse(s);
-		}
-	}
+	
 }
