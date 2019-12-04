@@ -1,0 +1,6 @@
+D:\Isel\19-20\Inverno\AVE\AVE2019-38866\AveExercises\AveExercises\obj\Debug\AveExercises.csprojAssemblyReference.cache
+D:\Isel\19-20\Inverno\AVE\AVE2019-38866\AveExercises\AveExercises\bin\Debug\AveExercises.dll.config
+D:\Isel\19-20\Inverno\AVE\AVE2019-38866\AveExercises\AveExercises\bin\Debug\AveExercises.dll
+D:\Isel\19-20\Inverno\AVE\AVE2019-38866\AveExercises\AveExercises\bin\Debug\AveExercises.pdb
+D:\Isel\19-20\Inverno\AVE\AVE2019-38866\AveExercises\AveExercises\obj\Debug\AveExercises.dll
+D:\Isel\19-20\Inverno\AVE\AVE2019-38866\AveExercises\AveExercises\obj\Debug\AveExercises.pdb
